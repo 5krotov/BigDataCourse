@@ -1,0 +1,15 @@
+# SSH Client Configuration for Hadoop Cluster
+Host *
+    StrictHostKeyChecking no
+    UserKnownHostsFile /dev/null
+    LogLevel QUIET
+    IdentityFile /home/hadoop/.ssh/cluster_key
+    IdentitiesOnly yes
+
+{% for host in groups['all'] %}
+Host {{ host }}
+    HostName {{ hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) }}
+    User hadoop
+    IdentityFile /home/hadoop/.ssh/cluster_key
+
+{% endfor %}

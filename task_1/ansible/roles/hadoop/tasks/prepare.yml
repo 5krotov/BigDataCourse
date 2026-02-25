@@ -1,0 +1,160 @@
+---
+
+- name: Check Java version
+  block:
+    - name: Check if Java is installed
+      command: java -version
+      register: java_version_output
+      changed_when: false
+      failed_when: false
+
+    - name: Extract Java version
+      set_fact:
+        java_version: "{{ java_version_output.stderr | regex_search('version \"(1\\.8|9|10|11|12|13|14|15|16|17|18|19|20|21).*\"', '\\1') | first | default('') }}"
+      when: java_version_output.rc == 0
+
+    - name: Fail if Java version is not 8 or 11
+      fail:
+        msg: "Java version must be 8 or 11. Found: {{ java_version }}"
+      when:
+        - java_version_output.rc == 0
+        - java_version not in ['1.8', '11']
+
+    - name: Fail if Java is not installed
+      fail:
+        msg: "Java is not installed. Please install Java 8 or 11 before proceeding."
+      when: java_version_output.rc != 0
+  tags: java_check
+
+- name: Create hadoop user
+  user:
+    name: hadoop
+    state: present
+    create_home: yes
+    shell: /bin/bash
+    groups: "{{ 'hadoop' if ansible_os_family == 'RedHat' else '' }}"
+    append: yes
+    password: "!"
+    password_lock: yes
+    system: no
+    comment: "Hadoop User"
+  tags: create_user
+
+- name: Ensure hadoop user has no sudo rights
+  lineinfile:
+    path: /etc/sudoers
+    state: absent
+    regexp: '^hadoop\s+'
+    validate: 'visudo -cf %s'
+  tags: sudo_rights
+
+
+- name: Create .ssh directory for hadoop user
+  file:
+    path: /home/hadoop/.ssh
+    state: directory
+    owner: hadoop
+    group: hadoop
+    mode: 0700
+  tags: ssh_key
+
+- name: Generate common cluster SSH key pair on jump_node
+  openssh_keypair:
+    path: /home/hadoop/.ssh/cluster_key
+    type: rsa
+    size: 4096
+    owner: hadoop
+    group: hadoop
+    mode: 0600
+    comment: "hadoop@{{ ansible_hostname }}"
+    state: present
+    force: no
+  register: ssh_key_result
+  when: inventory_hostname == groups['jump_node'][0]
+  tags: ssh_key
+
+- name: Fetch common cluster keys from jump-node
+  block:
+    - name: Read the private key from jump-node
+      slurp:
+        src: /home/hadoop/.ssh/cluster_key
+      register: private_key_content
+      when: inventory_hostname == groups['jump_node'][0]
+
+    - name: Set fact for private key on jump-node
+      set_fact:
+        cluster_private_key: "{{ private_key_content.content | b64decode | trim }}"
+      when: inventory_hostname == groups['jump_node'][0]
+
+    - name: Read the public key from jump-node
+      slurp:
+        src: /home/hadoop/.ssh/cluster_key.pub
+      register: public_key_content
+      when: inventory_hostname == groups['jump_node'][0]
+
+    - name: Set fact for public key on jump-node
+      set_fact:
+        cluster_public_key: "{{ public_key_content.content | b64decode | trim }}"
+      when: inventory_hostname == groups['jump_node'][0]
+
+    - name: Distribute public key to all hosts
+      set_fact:
+        cluster_public_key: "{{ hostvars[groups['jump_node'][0]].cluster_public_key }}"
+        cluster_private_key: "{{ hostvars[groups['jump_node'][0]].cluster_private_key }}"
+      when: inventory_hostname != groups['jump_node'][0]
+  tags: ssh_key_distribute
+
+- name: Add public key to authorized_keys on all hosts
+  authorized_key:
+    user: hadoop
+    state: present
+    key: "{{ cluster_public_key }}"
+    exclusive: no
+    comment: "hadoop cluster key"
+  tags: authorized_keys
+
+- name: Configure SSH client settings for hadoop user
+  template:
+    src: ssh_config.j2
+    dest: /home/hadoop/.ssh/config
+    owner: hadoop
+    group: hadoop
+    mode: 0600
+  tags: ssh_config
+
+- name: Set proper permissions for SSH files
+  file:
+    path: "{{ item }}"
+    owner: hadoop
+    group: hadoop
+    mode: 0600
+  loop:
+    - /home/hadoop/.ssh/cluster_key
+    - /home/hadoop/.ssh/config
+  when:
+    - item is exists
+  tags: permissions
+
+- name: Verify SSH connectivity from jump-node to all hosts
+  block:
+    - name: Test SSH connection to each host
+      command: >
+        ssh -i /home/hadoop/.ssh/cluster_key
+        -o StrictHostKeyChecking=no
+        -o ConnectTimeout=5
+        hadoop@{{ hostvars[item].ansible_host | default(hostvars[item].inventory_hostname) }}
+        "echo OK"
+      register: ssh_test
+      changed_when: false
+      failed_when: false
+      loop: "{{ groups['all'] }}"
+      when: inventory_hostname == groups['jump_node'][0]
+
+    - name: Report SSH connection results
+      debug:
+        msg: "SSH to {{ item.item }}: {{ 'SUCCESS' if item.rc == 0 else 'FAILED' }}"
+      loop: "{{ ssh_test.results }}"
+      when: inventory_hostname == groups['jump_node'][0] and ssh_test.results is defined
+  tags: ssh_test
+  ignore_errors: yes
+
