@@ -158,3 +158,31 @@
   tags: ssh_test
   ignore_errors: yes
 
+- name: Configure /etc/hosts with all cluster nodes
+  block:
+    - name: Build hosts file content
+      set_fact:
+        hosts_entries: |
+          {% for host in groups['all'] %}
+          {{ hostvars[host].ansible_default_ipv4.address | default(hostvars[host].ansible_host) }} {{ hostvars[host].ansible_hostname }}
+          {% endfor %}
+      run_once: true
+      delegate_to: localhost
+
+    - name: Add/Update entries in /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ item }}"
+        insertafter: EOF
+        state: present
+        backup: yes
+      loop: "{{ hosts_entries.split('\n') }}"
+      when: item | length > 0
+
+    - name: Remove duplicate entries (optional cleanup)
+      shell: |
+        awk '!seen[$0]++' /etc/hosts > /etc/hosts.tmp
+        mv /etc/hosts.tmp /etc/hosts
+      when: hosts_entries is defined
+  tags: hosts_config
+
