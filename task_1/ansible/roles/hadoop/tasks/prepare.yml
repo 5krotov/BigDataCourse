@@ -30,13 +30,13 @@
   user:
     name: hadoop
     state: present
-    create_home: yes
+    create_home: true
     shell: /bin/bash
     groups: "{{ 'hadoop' if ansible_os_family == 'RedHat' else '' }}"
-    append: yes
+    append: true
     password: "!"
-    password_lock: yes
-    system: no
+    password_lock: true
+    system: false
     comment: "Hadoop User"
   tags: create_user
 
@@ -47,7 +47,6 @@
     regexp: '^hadoop\s+'
     validate: 'visudo -cf %s'
   tags: sudo_rights
-
 
 - name: Create .ssh directory for hadoop user
   file:
@@ -68,24 +67,13 @@
     mode: 0600
     comment: "hadoop@{{ ansible_hostname }}"
     state: present
-    force: no
+    force: false
   register: ssh_key_result
   when: inventory_hostname == groups['jump_node'][0]
   tags: ssh_key
 
 - name: Fetch common cluster keys from jump-node
   block:
-    - name: Read the private key from jump-node
-      slurp:
-        src: /home/hadoop/.ssh/cluster_key
-      register: private_key_content
-      when: inventory_hostname == groups['jump_node'][0]
-
-    - name: Set fact for private key on jump-node
-      set_fact:
-        cluster_private_key: "{{ private_key_content.content | b64decode | trim }}"
-      when: inventory_hostname == groups['jump_node'][0]
-
     - name: Read the public key from jump-node
       slurp:
         src: /home/hadoop/.ssh/cluster_key.pub
@@ -100,8 +88,25 @@
     - name: Distribute public key to all hosts
       set_fact:
         cluster_public_key: "{{ hostvars[groups['jump_node'][0]].cluster_public_key }}"
-        cluster_private_key: "{{ hostvars[groups['jump_node'][0]].cluster_private_key }}"
       when: inventory_hostname != groups['jump_node'][0]
+  tags: ssh_key_distribute
+
+- name: Fetch cluster_key from jump_node
+  fetch:
+    src: /home/hadoop/.ssh/cluster_key
+    dest: /tmp/cluster_key_from_jump
+    flat: true
+  when: inventory_hostname == groups['jump_node'][0]
+  tags: ssh_key_distribute
+
+- name: Distribute cluster_key to targets
+  copy:
+    src: /tmp/cluster_key_from_jump
+    dest: /home/hadoop/.ssh/cluster_key
+    owner: hadoop
+    group: hadoop
+    mode: 0600
+  when: inventory_hostname != groups['jump_node'][0]
   tags: ssh_key_distribute
 
 - name: Add public key to authorized_keys on all hosts
@@ -109,7 +114,7 @@
     user: hadoop
     state: present
     key: "{{ cluster_public_key }}"
-    exclusive: no
+    exclusive: false
     comment: "hadoop cluster key"
   tags: authorized_keys
 
@@ -156,7 +161,7 @@
       loop: "{{ ssh_test.results }}"
       when: inventory_hostname == groups['jump_node'][0] and ssh_test.results is defined
   tags: ssh_test
-  ignore_errors: yes
+  ignore_errors: true
 
 - name: Configure /etc/hosts with all cluster nodes
   block:
@@ -175,7 +180,7 @@
         line: "{{ item }}"
         insertafter: EOF
         state: present
-        backup: yes
+        backup: true
       loop: "{{ hosts_entries.split('\n') }}"
       when: item | length > 0
 
@@ -184,5 +189,12 @@
         awk '!seen[$0]++' /etc/hosts > /etc/hosts.tmp
         mv /etc/hosts.tmp /etc/hosts
       when: hosts_entries is defined
+
+    - name: Comment out all 127.0.* lines in /etc/hosts
+      replace:
+        path: /etc/hosts
+        regexp: '^(\s*127\.0\.\d+\.\d+)'
+        replace: '#\1'
+      become: true
   tags: hosts_config
 
