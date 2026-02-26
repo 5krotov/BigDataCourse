@@ -66,6 +66,16 @@
   when: inventory_hostname in groups['worker_nodes'] | default(groups['data_nodes']) or inventory_hostname == groups['name_nodes'][0]
   tags: directories
 
+- name: Create Hadoop name directory (for namenode)
+  file:
+    path: "/tmp/hadoop-hadoop/dfs/name"
+    state: directory
+    owner: hadoop
+    group: hadoop
+    mode: 0755
+  when: inventory_hostname == groups['name_nodes'][0]
+  tags: directories
+
 - name: Validate Hadoop installation
   command: sudo -u hadoop /home/hadoop/hadoop/bin/hadoop version
   register: hadoop_version_check
@@ -84,22 +94,18 @@
   failed_when: false
   tags: validate
 
-- name: Check if NameNode is already formatted
-  stat:
-    path: "/tmp/hadoop-hadoop/dfs/name/current/VERSION"
-  register: namenode_formatted
-  when: inventory_hostname == groups['name_nodes'][0]
-  tags: format_namenode
-
 - name: Format HDFS NameNode (first time only)
-  command: |
-    echo 'Y' | /home/hadoop/hadoop/bin/hdfs namenode -format -force
+  command: /home/hadoop/hadoop/bin/hdfs namenode -format
   args:
     creates: "/tmp/hadoop-hadoop/dfs/name/current/VERSION"
   when: 
     - inventory_hostname == groups['name_nodes'][0]
-    - not namenode_formatted.stat.exists
   register: format_result
+  tags: format_namenode
+
+- name: Print format result
+  debug:
+    msg: "{{ format_result }}"
   tags: format_namenode
 
 - name: Check if HDFS is already running
