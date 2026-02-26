@@ -1,0 +1,140 @@
+---
+
+- name: Get NameNode IP address
+  set_fact:
+    namenode_ip: "{{ hostvars[groups['name_nodes'][0]].ansible_default_ipv4.address | default(hostvars[groups['name_nodes'][0]].ansible_host) }}"
+  run_once: true
+  when: groups['name_nodes'] is defined and groups['name_nodes'] | length > 0
+  tags: core_site
+
+- name: Fail if name_nodes group not defined
+  fail:
+    msg: "Please define a [name_nodes] group in your inventory with the NameNode host"
+  run_once: true
+  when: groups['name_nodes'] is not defined or groups['name_nodes'] | length == 0
+  tags: core_site
+
+- name: Configure SSH client settings for hadoop user
+  template:
+    src: "{{ item }}.j2"
+    dest: "/home/hadoop/hadoop/etc/hadoop/{{ item }}"
+    owner: hadoop
+    group: hadoop
+  loop:
+    - hdfs-site.xml
+    - core-site.xml
+    - workers
+  tags:
+    - core_site
+    - hdfs_site
+    - workers
+
+- name: Display workers file content
+  command: cat /home/hadoop/hadoop/etc/hadoop/workers
+  register: workers_content
+  changed_when: false
+  tags: workers
+
+- name: Show workers file content
+  debug:
+    msg: "Workers file contains:\n{{ workers_content.stdout }}"
+  tags: workers
+
+- name: Set proper ownership of all Hadoop files
+  file:
+    path: "/home/hadoop/{{ item }}"
+    owner: hadoop
+    group: hadoop
+    recurse: true
+    state: directory
+  loop:
+    - "{{ hadoop_dist }}"
+    - "hadoop"
+  tags: permissions
+
+- name: Create Hadoop data directories (for datanodes)
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: hadoop
+    group: hadoop
+    mode: 0755
+  loop:
+    - "/home/hadoop/hdfs/data"
+    - "/home/hadoop/hdfs/name"
+    - "/home/hadoop/hadoop/logs"
+  when: inventory_hostname in groups['worker_nodes'] | default(groups['data_nodes']) or inventory_hostname == groups['name_nodes'][0]
+  tags: directories
+
+- name: Create Hadoop name directory (for namenode)
+  file:
+    path: "/tmp/hadoop-hadoop/dfs/name"
+    state: directory
+    owner: hadoop
+    group: hadoop
+    mode: 0755
+  when: inventory_hostname == groups['name_nodes'][0]
+  tags: directories
+
+- name: Validate Hadoop installation
+  command: sudo -u hadoop /home/hadoop/hadoop/bin/hadoop version
+  register: hadoop_version_check
+  changed_when: false
+  tags: validate
+
+- name: Display Hadoop version
+  debug:
+    msg: "Hadoop installed: {{ hadoop_version_check.stdout_lines[0] }}"
+  tags: validate
+
+- name: Test Hadoop configuration
+  command: sudo -u hadoop /home/hadoop/hadoop/bin/hadoop checknative
+  register: native_check
+  changed_when: false
+  failed_when: false
+  tags: validate
+
+- name: Format HDFS NameNode (first time only)
+  command: /home/hadoop/hadoop/bin/hdfs namenode -format
+  args:
+    creates: "/tmp/hadoop-hadoop/dfs/name/current/VERSION"
+  when: 
+    - inventory_hostname == groups['name_nodes'][0]
+  register: format_result
+  tags: format_namenode
+
+- name: Print format result
+  debug:
+    msg: "{{ format_result }}"
+  tags: format_namenode
+
+- name: Check if HDFS is already running
+  command: sudo -u hadoop /home/hadoop/hadoop/bin/hdfs dfsadmin -report
+  register: hdfs_status
+  changed_when: false
+  failed_when: false
+  when: inventory_hostname == groups['name_nodes'][0]
+  tags: start_hdfs
+
+- name: Start HDFS cluster
+  command: sudo -u hadoop /home/hadoop/hadoop/sbin/start-dfs.sh
+  args:
+    chdir: "/home/hadoop/hadoop"
+  when: 
+    - inventory_hostname == groups['name_nodes'][0]
+    - hdfs_status.rc != 0
+  tags: start_hdfs
+
+- name: Wait for HDFS services to start
+  wait_for:
+    port: "{{ item.port }}"
+    host: "{{ item.host }}"
+    delay: 5
+    timeout: 60
+    state: started
+  when: inventory_hostname == groups['name_nodes'][0]
+  loop:
+    - { port: 9870, host: "{{ ansible_default_ipv4.address | default(ansible_host) }}" }  # NameNode web UI
+    - { port: 9000, host: "{{ ansible_default_ipv4.address | default(ansible_host) }}" }  # NameNode RPC
+  tags: start_hdfs
+

@@ -1,0 +1,33 @@
+---
+
+- name: Verify HDFS processes are running
+  shell: |
+    jps | grep -E 'NameNode|DataNode|SecondaryNameNode'
+  register: jps_output
+  changed_when: false
+  tags: verify_hdfs
+
+- name: Display HDFS processes
+  debug:
+    msg: "{{ inventory_hostname }}: {{ jps_output.stdout_lines }}"
+  when: jps_output.stdout_lines | length > 0
+  tags: verify_hdfs
+
+- name: Get HDFS report from NameNode
+  become: yes
+  become_user: hadoop
+  shell: |
+    /home/hadoop/hadoop/bin/hdfs dfsadmin -report
+  register: hdfs_report
+  changed_when: false
+  when: inventory_hostname == groups['name_nodes'][0]
+  tags: verify_hdfs
+
+- name: Display HDFS cluster status
+  debug:
+    msg: "{{ hdfs_report.stdout }}"
+  when: 
+    - inventory_hostname == groups['name_nodes'][0]
+    - hdfs_report.stdout is defined
+  tags: verify_hdfs
+

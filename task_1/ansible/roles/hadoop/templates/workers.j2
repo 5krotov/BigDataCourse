@@ -1,0 +1,3 @@
+{% for host in groups['worker_nodes'] | default(groups['data_nodes']) %}
+{{ hostvars[host].ansible_hostname }}
+{% endfor %}

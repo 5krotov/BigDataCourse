@@ -1,0 +1,8 @@
+---
+
+- name: Test play
+  hosts: "all"
+  become: true
+  roles:
+    - hadoop
+

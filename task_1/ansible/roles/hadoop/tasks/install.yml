@@ -1,0 +1,78 @@
+---
+
+- name: Download Hadoop tarball to /home/hadoop
+  get_url:
+    url: "{{ download_mirror }}"
+    dest: "/home/hadoop/{{ hadoop_dist }}.tar.gz"
+    owner: hadoop
+    group: hadoop
+    mode: 0644
+    timeout: 30
+    validate_certs: true
+  tags: download
+
+- name: Create installation directory
+  file:
+    path: "/home/hadoop/{{ hadoop_dist }}"
+    state: directory
+    owner: hadoop
+    group: hadoop
+    mode: 0755
+  tags: extract
+
+- name: Extract Hadoop tarball
+  unarchive:
+    src: "/home/hadoop/{{ hadoop_dist }}.tar.gz"
+    dest: "/home/hadoop/"
+    owner: hadoop
+    group: hadoop
+    remote_src: true
+    creates: "/home/hadoop/{{ hadoop_dist }}/bin/hadoop"
+  tags: extract
+
+- name: Create symbolic link for hadoop home
+  file:
+    src: "/home/hadoop/{{ hadoop_dist }}"
+    dest: "/home/hadoop/hadoop"
+    state: link
+    owner: hadoop
+    group: hadoop
+  tags: symlink
+
+- name: Set java_home_path
+  block:
+    - name: Read /usr/bin/java link
+      command: readlink -f /usr/bin/java
+      register: java_readlink_output
+      changed_when: false
+      failed_when: not java_readlink_output.stdout
+
+    - name: Set java_home_path fact
+      set_fact:
+        java_home_path: "{{ java_readlink_output.stdout.split('/jre')[0] }}"
+  when: java_home_path is undefined or not java_home_path
+  tags: configure_env
+
+- name: Set JAVA_HOME in hadoop-env.sh
+  lineinfile:
+    path: "/home/hadoop/hadoop/etc/hadoop/hadoop-env.sh"
+    regexp: '^#?export JAVA_HOME='
+    line: "export JAVA_HOME={{ java_home_path }}"
+    state: present
+  tags: configure_env
+
+- name: Add Hadoop environment variables to profile
+  blockinfile:
+    path: "/home/hadoop/.profile"
+    create: true
+    owner: hadoop
+    group: hadoop
+    mode: 0644
+    block: |
+      # Hadoop environment variables
+      export HADOOP_HOME=/home/hadoop/hadoop
+      export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
+      export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
+      export JAVA_HOME={{ java_home_path }}
+  tags: profile
+
