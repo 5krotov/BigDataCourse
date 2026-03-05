@@ -5,19 +5,19 @@
     jps | grep -E 'NameNode|DataNode|SecondaryNameNode'
   register: jps_output
   changed_when: false
+  when: inventory_hostname in groups['worker_nodes'] | default(groups['data_nodes'])
   tags: verify_hdfs
 
 - name: Display HDFS processes
   debug:
     msg: "{{ inventory_hostname }}: {{ jps_output.stdout_lines }}"
-  when: jps_output.stdout_lines | length > 0
+  when:
+    - inventory_hostname in groups['worker_nodes'] | default(groups['data_nodes'])
+    - jps_output.stdout_lines | length > 0
   tags: verify_hdfs
 
 - name: Get HDFS report from NameNode
-  become: yes
-  become_user: hadoop
-  shell: |
-    /home/hadoop/hadoop/bin/hdfs dfsadmin -report
+  command: sudo -u hadoop /home/hadoop/hadoop/bin/hdfs dfsadmin -report
   register: hdfs_report
   changed_when: false
   when: inventory_hostname == groups['name_nodes'][0]

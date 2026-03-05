@@ -51,18 +51,18 @@
     - yarn_status.stdout_lines | length == 0
   tags: start_yarn
 
-# - name: Wait for YARN ResourceManager to start
-#   wait_for:
-#     port: "{{ item.port }}"
-#     host: "{{ item.host }}"
-#     delay: 5
-#     timeout: 60
-#     state: started
-#   loop:
-#     - { port: 8088, host: "{{ groups['name_nodes'][0].split(',')[0] | default(ansible_default_ipv4.address | default(ansible_host)) }}" }  # RM Web UI
-#     - { port: 8032, host: "{{ groups['name_nodes'][0].split(',')[0] | default(ansible_default_ipv4.address | default(ansible_host)) }}" }  # RM RPC (опционально)
-#   when: inventory_hostname == groups['name_nodes'][0]
-#   tags: start_yarn
+- name: Wait for YARN ResourceManager to start
+  wait_for:
+    port: "{{ item.port }}"
+    host: "{{ item.host }}"
+    delay: 5
+    timeout: 60
+    state: started
+  loop:
+    - { port: 8088, host: "{{ ansible_default_ipv4.address | default(ansible_host) }}" }  # RM Web UI
+    - { port: 8032, host: "{{ ansible_default_ipv4.address | default(ansible_host) }}" }  # RM RPC (опционально)
+  when: inventory_hostname == groups['name_nodes'][0]
+  tags: start_yarn
 
 # MapReduce JobHistoryServer #
 
