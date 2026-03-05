@@ -13,6 +13,10 @@
   tags: configure
 
 - import_tasks:
+    file: start.yml
+  tags: start
+
+- import_tasks:
     file: verify.yml
   tags: verify
 

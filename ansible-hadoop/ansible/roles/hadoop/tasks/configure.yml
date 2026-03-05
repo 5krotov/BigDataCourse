@@ -3,6 +3,7 @@
 - name: Get NameNode IP address
   set_fact:
     namenode_ip: "{{ hostvars[groups['name_nodes'][0]].ansible_default_ipv4.address | default(hostvars[groups['name_nodes'][0]].ansible_host) }}"
+    namenode_hostname: "{{ hostvars[groups['name_nodes'][0]].ansible_hostname }}"
   run_once: true
   when: groups['name_nodes'] is defined and groups['name_nodes'] | length > 0
   tags: core_site
@@ -14,7 +15,7 @@
   when: groups['name_nodes'] is not defined or groups['name_nodes'] | length == 0
   tags: core_site
 
-- name: Configure SSH client settings for hadoop user
+- name: Template hadoop configs
   template:
     src: "{{ item }}.j2"
     dest: "/home/hadoop/hadoop/etc/hadoop/{{ item }}"
@@ -23,10 +24,14 @@
   loop:
     - hdfs-site.xml
     - core-site.xml
+    - mapred-site.xml
+    - yarn-site.xml
     - workers
   tags:
     - core_site
     - hdfs_site
+    - mapred_site
+    - yarn_site
     - workers
 
 - name: Display workers file content
@@ -107,34 +112,4 @@
   debug:
     msg: "{{ format_result }}"
   tags: format_namenode
-
-- name: Check if HDFS is already running
-  command: sudo -u hadoop /home/hadoop/hadoop/bin/hdfs dfsadmin -report
-  register: hdfs_status
-  changed_when: false
-  failed_when: false
-  when: inventory_hostname == groups['name_nodes'][0]
-  tags: start_hdfs
-
-- name: Start HDFS cluster
-  command: sudo -u hadoop /home/hadoop/hadoop/sbin/start-dfs.sh
-  args:
-    chdir: "/home/hadoop/hadoop"
-  when: 
-    - inventory_hostname == groups['name_nodes'][0]
-    - hdfs_status.rc != 0
-  tags: start_hdfs
-
-- name: Wait for HDFS services to start
-  wait_for:
-    port: "{{ item.port }}"
-    host: "{{ item.host }}"
-    delay: 5
-    timeout: 60
-    state: started
-  when: inventory_hostname == groups['name_nodes'][0]
-  loop:
-    - { port: 9870, host: "{{ ansible_default_ipv4.address | default(ansible_host) }}" }  # NameNode web UI
-    - { port: 9000, host: "{{ ansible_default_ipv4.address | default(ansible_host) }}" }  # NameNode RPC
-  tags: start_hdfs
 

@@ -1,6 +1,6 @@
 ---
 
-- name: Test play
+- name: Set up Hadoop
   hosts: "all"
   become: true
   roles:
