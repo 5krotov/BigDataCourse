@@ -1,0 +1,95 @@
+---
+
+# HDFS #
+
+- name: Check if HDFS is already running
+  command: sudo -u hadoop /home/hadoop/hadoop/bin/hdfs dfsadmin -report
+  register: hdfs_status
+  changed_when: false
+  failed_when: false
+  when: inventory_hostname == groups['name_nodes'][0]
+  tags: start_hdfs
+
+- name: Start HDFS cluster
+  command: sudo -u hadoop /home/hadoop/hadoop/sbin/start-dfs.sh
+  args:
+    chdir: "/home/hadoop/hadoop"
+  when:
+    - inventory_hostname == groups['name_nodes'][0]
+    - hdfs_status.rc != 0
+  tags: start_hdfs
+
+- name: Wait for HDFS services to start
+  wait_for:
+    port: "{{ item.port }}"
+    host: "{{ item.host }}"
+    delay: 5
+    timeout: 60
+    state: started
+  when: inventory_hostname == groups['name_nodes'][0]
+  loop:
+    - { port: 9870, host: "{{ ansible_default_ipv4.address | default(ansible_host) }}" }  # NameNode web UI
+    - { port: 9000, host: "{{ ansible_default_ipv4.address | default(ansible_host) }}" }  # NameNode RPC
+  tags: start_hdfs
+
+# YARN #
+
+- name: Check if YARN ResourceManager is already running
+  shell: sudo -u hadoop jps | grep -E 'ResourceManager|NodeManager' || true
+  register: yarn_status
+  changed_when: false
+  failed_when: false
+  when: inventory_hostname == groups['name_nodes'][0]
+  tags: start_yarn
+
+- name: Start YARN cluster
+  command: sudo -u hadoop /home/hadoop/hadoop/sbin/start-yarn.sh
+  args:
+    chdir: "/home/hadoop/hadoop"
+  when:
+    - inventory_hostname == groups['name_nodes'][0]
+    - yarn_status.stdout_lines | length == 0
+  tags: start_yarn
+
+# - name: Wait for YARN ResourceManager to start
+#   wait_for:
+#     port: "{{ item.port }}"
+#     host: "{{ item.host }}"
+#     delay: 5
+#     timeout: 60
+#     state: started
+#   loop:
+#     - { port: 8088, host: "{{ groups['name_nodes'][0].split(',')[0] | default(ansible_default_ipv4.address | default(ansible_host)) }}" }  # RM Web UI
+#     - { port: 8032, host: "{{ groups['name_nodes'][0].split(',')[0] | default(ansible_default_ipv4.address | default(ansible_host)) }}" }  # RM RPC (опционально)
+#   when: inventory_hostname == groups['name_nodes'][0]
+#   tags: start_yarn
+
+# MapReduce JobHistoryServer #
+
+- name: Check if JobHistoryServer is already running
+  shell: sudo -u hadoop jps | grep JobHistoryServer || true
+  register: history_status
+  changed_when: false
+  failed_when: false
+  when: inventory_hostname == groups['name_nodes'][0]
+  tags: start_historyserver
+
+- name: Start JobHistoryServer
+  command: sudo -u hadoop /home/hadoop/hadoop/bin/mapred --daemon start historyserver
+  args:
+    chdir: "/home/hadoop/hadoop"
+  when:
+    - inventory_hostname == groups['name_nodes'][0]
+    - history_status.stdout_lines | length == 0
+  tags: start_historyserver
+
+- name: Wait for JobHistoryServer to start
+  wait_for:
+    port: 19888
+    host: "{{ ansible_default_ipv4.address | default(ansible_host) }}"
+    delay: 5
+    timeout: 60
+    state: started
+  when: inventory_hostname == groups['name_nodes'][0]
+  tags: start_historyserver
+
