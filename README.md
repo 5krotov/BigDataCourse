@@ -1,5 +1,7 @@
 # BigDataCourse
 
+![](./ansible-hadoop/src/cluster.svg)
+
 ## Task 1
 
 - [INSTRUCTION.md](./ansible-hadoop/INSTRUCTION.md)
@@ -15,3 +17,11 @@
 PR](https://github.com/5krotov/BigDataCourse/pull/2) (их там много, но это
 из-за того, что папка с ansible-кодом была переназвана и были пофикшены мелкие
 баги).
+
+## Task 3
+
+- [AUTOMATION.md](./hw3/AUTOMATION.md)
+
+## Task 4
+
+- [AUTOMATION.md](./hw4/INSTRUCTION.md)
