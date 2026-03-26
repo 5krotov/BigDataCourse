@@ -92,7 +92,7 @@ check_hdfs ──┐
 check_yarn ──┘
 ```
 
-![](./hw5/Pasted image 20260326223218.png)
+<img width="2670" height="1290" alt="image" src="https://github.com/user-attachments/assets/8c297137-f45f-443f-9fb3-5bf0b3c242e4" />
 
 В UI появился пайплайн, логи пайпланы в отдельном файле.
 ## Проблемы при запуске через Airflow
