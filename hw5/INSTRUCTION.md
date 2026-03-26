@@ -3,7 +3,18 @@
 
 Как исходные данные использовал файл - `/raw/test.snappy.parquet`
 Заранее загрузил Spark JAR-файлы в HDFS для ускорения запуска
+```bash
+# Создаём директорию в HDFS
+/home/hadoop/hadoop-3.4.3/bin/hdfs dfs -mkdir -p /spark-jars
 
+# Загружаем все JAR-файлы Spark
+/home/hadoop/hadoop-3.4.3/bin/hdfs dfs -put \
+    /home/hadoop/spark-3.5.3-bin-hadoop3/jars/* \
+    /spark-jars/
+
+# Проверяем загрузку
+/home/hadoop/hadoop-3.4.3/bin/hdfs dfs -ls /spark-jars/ | wc -l
+```
 Написал скрипт `/home/hadoop/spark_pipeline_job.py`, выполняющий следующие шаги:
 
 1. **Чтение данных** из HDFS (`/user/hive/warehouse/test/`) в формате Parquet    
@@ -32,19 +43,49 @@
 После успешного ручного запуска пайплайн был перенесён в Apache Airflow.
 ```bash
 source ~/.venv/bin/activate
-pip install "apache-airflow==2.9.3" \
-            "apache-airflow-providers-apache-spark" \
-            --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.9.3/constraints-3.12.txt"
-            
-            
-            
+
+AIRFLOW_VERSION=2.9.3
+PYTHON_VERSION="$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')"
+CONSTRAINT_URL="https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-${PYTHON_VERSION}.txt"
+
+pip install \
+    "apache-airflow==${AIRFLOW_VERSION}" \
+    "apache-airflow-providers-apache-spark" \
+    --constraint "${CONSTRAINT_URL}"
+
 export AIRFLOW_HOME=~/airflow
+
 airflow db migrate
-airflow users create --username admin --role Admin ...
+
+airflow users create \
+    --username admin \
+    --firstname Admin \
+    --lastname User \
+    --role Admin \
+    --email admin@example.com \
+    --password admin123
+
+# Проверка
+airflow users list
+```
+```bash
+# Удаляем предыдущие попытки
+airflow connections delete spark_yarn
+
+# Создаём правильный connection
+airflow connections add spark_yarn \
+    --conn-type spark \
+    --conn-host yarn \
+    --conn-extra \
+    '{"spark-binary": "spark-submit", "deploy-mode": "client", "queue": "default"}'
+
+# Проверяем
+airflow connections get spark_yarn
 ```
 
-Был создан DAG spark_hive_pipeline с пятью задачами:
-
+Был создан DAG spark_hive_dag с пятью задачами:
+Файл лежит рядом
+Отдельно была джоба в которой происходили действия с таблицей.
 ```text
 check_hdfs ──┐
              ├──→ check_hive_services ──→ run_spark_job ──→ verify_hive_table
