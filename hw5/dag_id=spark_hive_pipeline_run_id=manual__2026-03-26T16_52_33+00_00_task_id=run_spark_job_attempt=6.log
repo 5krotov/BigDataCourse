@@ -1,0 +1,196 @@
+team-06-nn
+*** Found local files:
+***   * /home/hadoop/airflow/logs/dag_id=spark_hive_pipeline/run_id=manual__2026-03-26T16:52:33+00:00/task_id=run_spark_job/attempt=6.log
+[2026-03-26T17:45:46.464+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2026-03-26T17:45:46.472+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: spark_hive_pipeline.run_spark_job manual__2026-03-26T16:52:33+00:00 [queued]>
+[2026-03-26T17:45:46.475+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: spark_hive_pipeline.run_spark_job manual__2026-03-26T16:52:33+00:00 [queued]>
+[2026-03-26T17:45:46.476+0000] {taskinstance.py:2306} INFO - Starting attempt 6 of 6
+[2026-03-26T17:45:46.483+0000] {taskinstance.py:2330} INFO - Executing <Task(SparkSubmitOperator): run_spark_job> on 2026-03-26 16:52:33+00:00
+[2026-03-26T17:45:46.487+0000] {standard_task_runner.py:64} INFO - Started process 550003 to run task
+[2026-03-26T17:45:46.488+0000] {standard_task_runner.py:90} INFO - Running: ['airflow', 'tasks', 'run', 'spark_hive_pipeline', 'run_spark_job', 'manual__2026-03-26T16:52:33+00:00', '--job-id', '68', '--raw', '--subdir', 'DAGS_FOLDER/spark_hive_dag.py', '--cfg-path', '/tmp/tmpjs4ij444']
+[2026-03-26T17:45:46.489+0000] {standard_task_runner.py:91} INFO - Job 68: Subtask run_spark_job
+[2026-03-26T17:45:46.510+0000] {task_command.py:426} INFO - Running <TaskInstance: spark_hive_pipeline.run_spark_job manual__2026-03-26T16:52:33+00:00 [running]> on host team-06-nn
+[2026-03-26T17:45:46.542+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='hadoop' AIRFLOW_CTX_DAG_ID='spark_hive_pipeline' AIRFLOW_CTX_TASK_ID='run_spark_job' AIRFLOW_CTX_EXECUTION_DATE='2026-03-26T16:52:33+00:00' AIRFLOW_CTX_TRY_NUMBER='6' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-03-26T16:52:33+00:00'
+[2026-03-26T17:45:46.542+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2026-03-26T17:45:46.545+0000] {base.py:84} INFO - Using connection ID 'spark_yarn' for task execution.
+[2026-03-26T17:45:46.546+0000] {spark_submit.py:401} INFO - Spark-Submit cmd: spark-submit --master yarn --conf spark.hive.metastore.uris=thrift://team-06-nn:9083 --conf spark.sql.warehouse.dir=/user/hive/warehouse --conf spark.yarn.appMasterEnv.PYSPARK_PYTHON=/home/hadoop/.venv/bin/python3 --conf spark.executorEnv.PYSPARK_PYTHON=/home/hadoop/.venv/bin/python3 --conf spark.yarn.appMasterEnv.HADOOP_CONF_DIR=/home/hadoop/hadoop-3.4.3/etc/hadoop --conf spark.yarn.appMasterEnv.JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 --conf spark.yarn.appMasterEnv.PYSPARK_PYTHON=/home/hadoop/.venv/bin/python3 --num-executors 2 --executor-cores 1 --executor-memory 1g --name airflow_spark_pipeline --queue default --deploy-mode client /home/hadoop/spark_pipeline_job.py
+[2026-03-26T17:45:48.381+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:48 INFO SparkContext: Running Spark version 3.5.3
+[2026-03-26T17:45:48.382+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:48 INFO SparkContext: OS info Linux, 6.8.0-100-generic, amd64
+[2026-03-26T17:45:48.382+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:48 INFO SparkContext: Java version 1.8.0_482
+[2026-03-26T17:45:48.451+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:48 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+[2026-03-26T17:45:48.770+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:48 INFO ResourceUtils: ==============================================================
+[2026-03-26T17:45:48.770+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:48 INFO ResourceUtils: No custom resources configured for spark.driver.
+[2026-03-26T17:45:48.770+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:48 INFO ResourceUtils: ==============================================================
+[2026-03-26T17:45:48.771+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:48 INFO SparkContext: Submitted application: airflow_spark_pipeline
+[2026-03-26T17:45:48.793+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:48 INFO ResourceProfile: Default ResourceProfile created, executor resources: Map(cores -> name: cores, amount: 1, script: , vendor: , memory -> name: memory, amount: 1024, script: , vendor: , offHeap -> name: offHeap, amount: 0, script: , vendor: ), task resources: Map(cpus -> name: cpus, amount: 1.0)
+[2026-03-26T17:45:48.802+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:48 INFO ResourceProfile: Limiting resource is cpus at 1 tasks per executor
+[2026-03-26T17:45:48.802+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:48 INFO ResourceProfileManager: Added ResourceProfile id: 0
+[2026-03-26T17:45:48.982+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:48 INFO SecurityManager: Changing view acls to: hadoop
+[2026-03-26T17:45:48.983+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:48 INFO SecurityManager: Changing modify acls to: hadoop
+[2026-03-26T17:45:48.984+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:48 INFO SecurityManager: Changing view acls groups to:
+[2026-03-26T17:45:48.984+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:48 INFO SecurityManager: Changing modify acls groups to:
+[2026-03-26T17:45:48.984+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:48 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users with view permissions: hadoop; groups with view permissions: EMPTY; users with modify permissions: hadoop; groups with modify permissions: EMPTY
+[2026-03-26T17:45:49.474+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:49 INFO Utils: Successfully started service 'sparkDriver' on port 46397.
+[2026-03-26T17:45:49.561+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:49 INFO SparkEnv: Registering MapOutputTracker
+[2026-03-26T17:45:49.742+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:49 INFO SparkEnv: Registering BlockManagerMaster
+[2026-03-26T17:45:49.801+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:49 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+[2026-03-26T17:45:49.802+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:49 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+[2026-03-26T17:45:49.831+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:49 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+[2026-03-26T17:45:49.856+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:49 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-d9e24fe1-3dbc-4f6a-b62d-9fe6ada59a1e
+[2026-03-26T17:45:49.873+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:49 INFO MemoryStore: MemoryStore started with capacity 366.3 MiB
+[2026-03-26T17:45:49.893+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:49 INFO SparkEnv: Registering OutputCommitCoordinator
+[2026-03-26T17:45:50.438+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:50 INFO JettyUtils: Start Jetty 0.0.0.0:4040 for SparkUI
+[2026-03-26T17:45:50.751+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:50 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+[2026-03-26T17:45:51.316+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:51 INFO DefaultNoHARMFailoverProxyProvider: Connecting to ResourceManager at team-06-nn/192.168.10.25:8032
+[2026-03-26T17:45:57.722+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:57 INFO Configuration: resource-types.xml not found
+[2026-03-26T17:45:57.723+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:57 INFO ResourceUtils: Unable to find 'resource-types.xml'.
+[2026-03-26T17:45:57.972+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:57 INFO Client: Verifying our application has not requested more than the maximum memory capability of the cluster (8192 MB per container)
+[2026-03-26T17:45:57.972+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:57 INFO Client: Will allocate AM container, with 896 MB memory including 384 MB overhead
+[2026-03-26T17:45:57.972+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:57 INFO Client: Setting up container launch context for our AM
+[2026-03-26T17:45:57.973+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:57 INFO Client: Setting up the launch environment for our AM container
+[2026-03-26T17:45:57.976+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:57 INFO Client: Preparing resources for our AM container
+[2026-03-26T17:45:58.214+0000] {spark_submit.py:571} INFO - 26/03/26 17:45:58 WARN Client: Neither spark.yarn.jars nor spark.yarn.archive is set, falling back to uploading libraries under SPARK_HOME.
+[2026-03-26T17:48:46.366+0000] {spark_submit.py:571} INFO - 26/03/26 17:48:46 INFO Client: Uploading resource file:/tmp/spark-85206b86-37bb-4847-8c9f-ab9afd4972e2/__spark_libs__594200096114221012.zip -> hdfs://192.168.10.25:9000/user/hadoop/.sparkStaging/application_1773268682224_0006/__spark_libs__594200096114221012.zip
+[2026-03-26T17:50:53.287+0000] {spark_submit.py:571} INFO - 26/03/26 17:50:53 WARN DataStreamer: Exception for BP-691012915-192.168.10.25-1772074916706:blk_1073743337_2513
+[2026-03-26T17:50:53.287+0000] {spark_submit.py:571} INFO - java.net.SocketTimeoutException: 75000 millis timeout while waiting for channel to be ready for read. ch : java.nio.channels.SocketChannel[connected local=/192.168.10.25:46358 remote=/192.168.10.25:9866]
+[2026-03-26T17:50:53.287+0000] {spark_submit.py:571} INFO - at org.apache.hadoop.net.SocketIOWithTimeout.doIO(SocketIOWithTimeout.java:163)
+[2026-03-26T17:50:53.288+0000] {spark_submit.py:571} INFO - at org.apache.hadoop.net.SocketInputStream.read(SocketInputStream.java:161)
+[2026-03-26T17:50:53.288+0000] {spark_submit.py:571} INFO - at org.apache.hadoop.net.SocketInputStream.read(SocketInputStream.java:131)
+[2026-03-26T17:50:53.288+0000] {spark_submit.py:571} INFO - at org.apache.hadoop.net.SocketInputStream.read(SocketInputStream.java:118)
+[2026-03-26T17:50:53.288+0000] {spark_submit.py:571} INFO - at java.io.FilterInputStream.read(FilterInputStream.java:83)
+[2026-03-26T17:50:53.288+0000] {spark_submit.py:571} INFO - at org.apache.hadoop.hdfs.protocolPB.PBHelperClient.vintPrefixed(PBHelperClient.java:519)
+[2026-03-26T17:50:53.288+0000] {spark_submit.py:571} INFO - at org.apache.hadoop.hdfs.protocol.datatransfer.PipelineAck.readFields(PipelineAck.java:213)
+[2026-03-26T17:50:53.288+0000] {spark_submit.py:571} INFO - at org.apache.hadoop.hdfs.DataStreamer$ResponseProcessor.run(DataStreamer.java:1137)
+[2026-03-26T17:50:53.289+0000] {spark_submit.py:571} INFO - 26/03/26 17:50:53 WARN DataStreamer: Error Recovery for BP-691012915-192.168.10.25-1772074916706:blk_1073743337_2513 in pipeline [DatanodeInfoWithStorage[192.168.10.25:9866,DS-c8f791e9-2294-4ba7-8e53-5efb1174678a,DISK], DatanodeInfoWithStorage[192.168.10.23:9866,DS-487e9fce-4452-43c3-ac57-507545d9ed36,DISK], DatanodeInfoWithStorage[192.168.10.24:9866,DS-d1a5bc97-2e59-49f2-9cf7-d92936f3c3bf,DISK]]: datanode 0(DatanodeInfoWithStorage[192.168.10.25:9866,DS-c8f791e9-2294-4ba7-8e53-5efb1174678a,DISK]) is bad.
+[2026-03-26T17:51:53.215+0000] {spark_submit.py:571} INFO - 26/03/26 17:51:53 INFO Client: Uploading resource file:/home/hadoop/spark-3.5.3-bin-hadoop3/python/lib/pyspark.zip -> hdfs://192.168.10.25:9000/user/hadoop/.sparkStaging/application_1773268682224_0006/pyspark.zip
+[2026-03-26T17:51:56.961+0000] {spark_submit.py:571} INFO - 26/03/26 17:51:56 INFO Client: Uploading resource file:/home/hadoop/spark-3.5.3-bin-hadoop3/python/lib/py4j-0.10.9.7-src.zip -> hdfs://192.168.10.25:9000/user/hadoop/.sparkStaging/application_1773268682224_0006/py4j-0.10.9.7-src.zip
+[2026-03-26T17:52:14.711+0000] {spark_submit.py:571} INFO - 26/03/26 17:52:14 INFO Client: Uploading resource file:/tmp/spark-85206b86-37bb-4847-8c9f-ab9afd4972e2/__spark_conf__1194234498960686958.zip -> hdfs://192.168.10.25:9000/user/hadoop/.sparkStaging/application_1773268682224_0006/__spark_conf__.zip
+[2026-03-26T17:52:19.211+0000] {spark_submit.py:571} INFO - 26/03/26 17:52:19 INFO SecurityManager: Changing view acls to: hadoop
+[2026-03-26T17:52:19.211+0000] {spark_submit.py:571} INFO - 26/03/26 17:52:19 INFO SecurityManager: Changing modify acls to: hadoop
+[2026-03-26T17:52:19.212+0000] {spark_submit.py:571} INFO - 26/03/26 17:52:19 INFO SecurityManager: Changing view acls groups to:
+[2026-03-26T17:52:19.212+0000] {spark_submit.py:571} INFO - 26/03/26 17:52:19 INFO SecurityManager: Changing modify acls groups to:
+[2026-03-26T17:52:19.212+0000] {spark_submit.py:571} INFO - 26/03/26 17:52:19 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users with view permissions: hadoop; groups with view permissions: EMPTY; users with modify permissions: hadoop; groups with modify permissions: EMPTY
+[2026-03-26T17:52:20.875+0000] {spark_submit.py:571} INFO - 26/03/26 17:52:20 INFO Client: Submitting application application_1773268682224_0006 to ResourceManager
+[2026-03-26T17:52:50.711+0000] {spark_submit.py:571} INFO - 26/03/26 17:52:50 INFO YarnClientImpl: Submitted application application_1773268682224_0006
+[2026-03-26T17:52:51.962+0000] {spark_submit.py:571} INFO - 26/03/26 17:52:51 INFO Client: Application report for application_1773268682224_0006 (state: ACCEPTED)
+[2026-03-26T17:52:51.964+0000] {spark_submit.py:571} INFO - 26/03/26 17:52:51 INFO Client:
+[2026-03-26T17:52:51.964+0000] {spark_submit.py:571} INFO - client token: N/A
+[2026-03-26T17:52:51.964+0000] {spark_submit.py:571} INFO - diagnostics: N/A
+[2026-03-26T17:52:51.964+0000] {spark_submit.py:571} INFO - ApplicationMaster host: N/A
+[2026-03-26T17:52:51.964+0000] {spark_submit.py:571} INFO - ApplicationMaster RPC port: -1
+[2026-03-26T17:52:51.964+0000] {spark_submit.py:571} INFO - queue: root.default
+[2026-03-26T17:52:51.964+0000] {spark_submit.py:571} INFO - start time: 1774547553958
+[2026-03-26T17:52:51.964+0000] {spark_submit.py:571} INFO - final status: UNDEFINED
+[2026-03-26T17:52:51.964+0000] {spark_submit.py:571} INFO - tracking URL: http://team-06-nn:8088/proxy/application_1773268682224_0006/
+[2026-03-26T17:52:51.964+0000] {spark_submit.py:571} INFO - user: hadoop
+[2026-03-26T17:53:25.213+0000] {spark_submit.py:571} INFO - 26/03/26 17:53:25 INFO Client: Application report for application_1773268682224_0006 (state: ACCEPTED)
+[2026-03-26T17:53:56.212+0000] {spark_submit.py:571} INFO - 26/03/26 17:53:56 INFO Client: Application report for application_1773268682224_0006 (state: ACCEPTED)
+[2026-03-26T17:54:26.710+0000] {spark_submit.py:571} INFO - 26/03/26 17:54:26 INFO Client: Application report for application_1773268682224_0006 (state: ACCEPTED)
+[2026-03-26T17:54:56.892+0000] {spark_submit.py:571} INFO - 26/03/26 17:54:56 INFO Client: Application report for application_1773268682224_0006 (state: ACCEPTED)
+[2026-03-26T17:55:28.429+0000] {spark_submit.py:571} INFO - 26/03/26 17:55:28 INFO Client: Application report for application_1773268682224_0006 (state: ACCEPTED)
+[2026-03-26T17:55:59.211+0000] {spark_submit.py:571} INFO - 26/03/26 17:55:59 INFO Client: Application report for application_1773268682224_0006 (state: ACCEPTED)
+[2026-03-26T17:56:29.246+0000] {spark_submit.py:571} INFO - 26/03/26 17:56:29 INFO Client: Application report for application_1773268682224_0006 (state: ACCEPTED)
+[2026-03-26T17:56:59.533+0000] {spark_submit.py:571} INFO - 26/03/26 17:56:59 INFO Client: Application report for application_1773268682224_0006 (state: ACCEPTED)
+[2026-03-26T17:57:16.968+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:16 INFO Client: Application report for application_1773268682224_0006 (state: RUNNING)
+[2026-03-26T17:57:16.969+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:16 INFO Client:
+[2026-03-26T17:57:16.969+0000] {spark_submit.py:571} INFO - client token: N/A
+[2026-03-26T17:57:16.969+0000] {spark_submit.py:571} INFO - diagnostics: N/A
+[2026-03-26T17:57:16.969+0000] {spark_submit.py:571} INFO - ApplicationMaster host: 192.168.10.25
+[2026-03-26T17:57:16.969+0000] {spark_submit.py:571} INFO - ApplicationMaster RPC port: -1
+[2026-03-26T17:57:16.969+0000] {spark_submit.py:571} INFO - queue: root.default
+[2026-03-26T17:57:16.969+0000] {spark_submit.py:571} INFO - start time: 1774547553958
+[2026-03-26T17:57:16.969+0000] {spark_submit.py:571} INFO - final status: UNDEFINED
+[2026-03-26T17:57:16.969+0000] {spark_submit.py:571} INFO - tracking URL: http://team-06-nn:8088/proxy/application_1773268682224_0006/
+[2026-03-26T17:57:16.969+0000] {spark_submit.py:571} INFO - user: hadoop
+[2026-03-26T17:57:16.970+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:16 INFO YarnClientSchedulerBackend: Application application_1773268682224_0006 has started running.
+[2026-03-26T17:57:18.211+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:18 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 32771.
+[2026-03-26T17:57:18.211+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:18 INFO NettyBlockTransferService: Server created on team-06-nn:32771
+[2026-03-26T17:57:18.212+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:18 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+[2026-03-26T17:57:18.707+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:18 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, team-06-nn, 32771, None)
+[2026-03-26T17:57:18.961+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:18 INFO BlockManagerMasterEndpoint: Registering block manager team-06-nn:32771 with 366.3 MiB RAM, BlockManagerId(driver, team-06-nn, 32771, None)
+[2026-03-26T17:57:19.463+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:19 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, team-06-nn, 32771, None)
+[2026-03-26T17:57:19.708+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:19 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, team-06-nn, 32771, None)
+[2026-03-26T17:57:21.975+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:21 INFO YarnClientSchedulerBackend: Add WebUI Filter. org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter, Map(PROXY_HOSTS -> team-06-nn, PROXY_URI_BASES -> http://team-06-nn:8088/proxy/application_1773268682224_0006), /proxy/application_1773268682224_0006
+[2026-03-26T17:57:23.704+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:23 INFO ServerInfo: Adding filter to /jobs: org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter
+[2026-03-26T17:57:23.876+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:23 INFO ServerInfo: Adding filter to /jobs/json: org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter
+[2026-03-26T17:57:23.876+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:23 INFO ServerInfo: Adding filter to /jobs/job: org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter
+[2026-03-26T17:57:23.879+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:23 INFO ServerInfo: Adding filter to /jobs/job/json: org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter
+[2026-03-26T17:57:23.879+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:23 INFO ServerInfo: Adding filter to /stages: org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter
+[2026-03-26T17:57:23.879+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:23 INFO ServerInfo: Adding filter to /stages/json: org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter
+[2026-03-26T17:57:23.879+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:23 INFO AsyncEventQueue: Process of event SparkListenerResourceProfileAdded(Profile: id = 0, executor resources: cores -> name: cores, amount: 1, script: , vendor: ,memory -> name: memory, amount: 1024, script: , vendor: ,offHeap -> name: offHeap, amount: 0, script: , vendor: , task resources: cpus -> name: cpus, amount: 1.0) by listener HeartbeatReceiver took 1.156020716s.
+[2026-03-26T17:57:23.879+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:23 INFO ServerInfo: Adding filter to /stages/stage: org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter
+[2026-03-26T17:57:23.879+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:23 INFO ServerInfo: Adding filter to /stages/stage/json: org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter
+[2026-03-26T17:57:23.879+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:23 INFO ServerInfo: Adding filter to /stages/pool: org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter
+[2026-03-26T17:57:23.880+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:23 INFO ServerInfo: Adding filter to /stages/pool/json: org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter
+[2026-03-26T17:57:23.882+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:23 INFO ServerInfo: Adding filter to /storage: org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter
+[2026-03-26T17:57:23.883+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:23 INFO ServerInfo: Adding filter to /storage/json: org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter
+[2026-03-26T17:57:23.883+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:23 INFO ServerInfo: Adding filter to /storage/rdd: org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter
+[2026-03-26T17:57:23.883+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:23 INFO ServerInfo: Adding filter to /storage/rdd/json: org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter
+[2026-03-26T17:57:23.884+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:23 INFO ServerInfo: Adding filter to /environment: org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter
+[2026-03-26T17:57:23.885+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:23 INFO ServerInfo: Adding filter to /environment/json: org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter
+[2026-03-26T17:57:23.885+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:23 INFO ServerInfo: Adding filter to /executors: org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter
+[2026-03-26T17:57:23.886+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:23 INFO ServerInfo: Adding filter to /executors/json: org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter
+[2026-03-26T17:57:23.887+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:23 INFO ServerInfo: Adding filter to /executors/threadDump: org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter
+[2026-03-26T17:57:23.889+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:23 INFO ServerInfo: Adding filter to /executors/threadDump/json: org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter
+[2026-03-26T17:57:23.889+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:23 INFO ServerInfo: Adding filter to /static: org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter
+[2026-03-26T17:57:23.957+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:23 INFO AsyncEventQueue: Process of event SparkListenerResourceProfileAdded(Profile: id = 0, executor resources: cores -> name: cores, amount: 1, script: , vendor: ,memory -> name: memory, amount: 1024, script: , vendor: ,offHeap -> name: offHeap, amount: 0, script: , vendor: , task resources: cpus -> name: cpus, amount: 1.0) by listener AppStatusListener took 1.24682475s.
+[2026-03-26T17:57:24.217+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:24 INFO ServerInfo: Adding filter to /: org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter
+[2026-03-26T17:57:24.220+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:24 INFO ServerInfo: Adding filter to /api: org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter
+[2026-03-26T17:57:24.221+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:24 INFO ServerInfo: Adding filter to /jobs/job/kill: org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter
+[2026-03-26T17:57:24.221+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:24 INFO ServerInfo: Adding filter to /stages/stage/kill: org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter
+[2026-03-26T17:57:24.226+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:24 INFO ServerInfo: Adding filter to /metrics/json: org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter
+[2026-03-26T17:57:24.230+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:24 INFO YarnClientSchedulerBackend: SchedulerBackend is ready for scheduling beginning after waiting maxRegisteredResourcesWaitingTime: 30000000000(ns)
+[2026-03-26T17:57:25.254+0000] {spark_submit.py:571} INFO - 26/03/26 17:57:25 INFO YarnSchedulerBackend$YarnSchedulerEndpoint: ApplicationMaster registered as NettyRpcEndpointRef(spark-client://YarnAM)
+[2026-03-26T18:01:05.756+0000] {spark_submit.py:571} INFO - [INFO] Прочитано строк: 2000
+[2026-03-26T18:01:05.758+0000] {spark_submit.py:571} INFO - root
+[2026-03-26T18:01:05.758+0000] {spark_submit.py:571} INFO - |-- id: integer (nullable = true)
+[2026-03-26T18:01:05.758+0000] {spark_submit.py:571} INFO - |-- first_name: string (nullable = true)
+[2026-03-26T18:01:05.758+0000] {spark_submit.py:571} INFO - |-- last_name: string (nullable = true)
+[2026-03-26T18:01:05.758+0000] {spark_submit.py:571} INFO - |-- email: string (nullable = true)
+[2026-03-26T18:01:05.758+0000] {spark_submit.py:571} INFO - |-- gender: string (nullable = true)
+[2026-03-26T18:01:05.758+0000] {spark_submit.py:571} INFO - |-- ip_address: string (nullable = true)
+[2026-03-26T18:01:05.758+0000] {spark_submit.py:571} INFO - |-- cc: string (nullable = true)
+[2026-03-26T18:01:05.758+0000] {spark_submit.py:571} INFO - |-- country: string (nullable = true)
+[2026-03-26T18:01:05.758+0000] {spark_submit.py:571} INFO - |-- birthdate: string (nullable = true)
+[2026-03-26T18:01:05.758+0000] {spark_submit.py:571} INFO - |-- salary: double (nullable = true)
+[2026-03-26T18:01:05.758+0000] {spark_submit.py:571} INFO - |-- title: string (nullable = true)
+[2026-03-26T18:01:05.758+0000] {spark_submit.py:571} INFO - |-- comments: string (nullable = true)
+[2026-03-26T18:01:05.758+0000] {spark_submit.py:571} INFO - 
+[2026-03-26T18:01:14.038+0000] {spark_submit.py:571} INFO - [INFO] Агрегировано строк: 299
+[2026-03-26T18:01:31.519+0000] {spark_submit.py:571} INFO - +-------------+------+-----------+--------------+----------+----------+----------+
+[2026-03-26T18:01:31.520+0000] {spark_submit.py:571} INFO - |country      |gender|salary_tier|employee_count|avg_salary|max_salary|min_salary|
+[2026-03-26T18:01:31.520+0000] {spark_submit.py:571} INFO - +-------------+------+-----------+--------------+----------+----------+----------+
+[2026-03-26T18:01:31.520+0000] {spark_submit.py:571} INFO - |Afghanistan  |FEMALE|High       |2             |220302.18 |220302.18 |220302.18 |
+[2026-03-26T18:01:31.520+0000] {spark_submit.py:571} INFO - |Afghanistan  |MALE  |Low        |2             |22099.86  |22099.86  |22099.86  |
+[2026-03-26T18:01:31.520+0000] {spark_submit.py:571} INFO - |Aland Islands|MALE  |High       |2             |259912.24 |259912.24 |259912.24 |
+[2026-03-26T18:01:31.520+0000] {spark_submit.py:571} INFO - |Albania      |FEMALE|High       |4             |164197.18 |181413.87 |146980.49 |
+[2026-03-26T18:01:31.520+0000] {spark_submit.py:571} INFO - |Albania      |FEMALE|Mid        |2             |79168.38  |79168.38  |79168.38  |
+[2026-03-26T18:01:31.520+0000] {spark_submit.py:571} INFO - |Angola       |FEMALE|High       |2             |229095.6  |229095.6  |229095.6  |
+[2026-03-26T18:01:31.520+0000] {spark_submit.py:571} INFO - |Argentina    |FEMALE|High       |12            |171379.12 |271799.8  |102882.64 |
+[2026-03-26T18:01:31.520+0000] {spark_submit.py:571} INFO - |Argentina    |FEMALE|Low        |2             |47723.61  |47723.61  |47723.61  |
+[2026-03-26T18:01:31.520+0000] {spark_submit.py:571} INFO - |Argentina    |FEMALE|Mid        |4             |65890.79  |70884.64  |60896.93  |
+[2026-03-26T18:01:31.520+0000] {spark_submit.py:571} INFO - |Argentina    |MALE  |High       |2             |209961.64 |209961.64 |209961.64 |
+[2026-03-26T18:01:31.520+0000] {spark_submit.py:571} INFO - |Argentina    |MALE  |Low        |2             |43533.38  |43533.38  |43533.38  |
+[2026-03-26T18:01:31.520+0000] {spark_submit.py:571} INFO - |Argentina    |MALE  |Mid        |4             |79896.45  |81685.1   |78107.8   |
+[2026-03-26T18:01:31.520+0000] {spark_submit.py:571} INFO - |Armenia      |FEMALE|High       |4             |214631.91 |248210.26 |181053.56 |
+[2026-03-26T18:01:31.520+0000] {spark_submit.py:571} INFO - |Armenia      |MALE  |High       |2             |168177.8  |168177.8  |168177.8  |
+[2026-03-26T18:01:31.520+0000] {spark_submit.py:571} INFO - |Armenia      |MALE  |Mid        |2             |87257.52  |87257.52  |87257.52  |
+[2026-03-26T18:01:31.520+0000] {spark_submit.py:571} INFO - |Australia    |FEMALE|High       |4             |200363.47 |254300.0  |146426.94 |
+[2026-03-26T18:01:31.520+0000] {spark_submit.py:571} INFO - |Azerbaijan   |FEMALE|High       |2             |254305.28 |254305.28 |254305.28 |
+[2026-03-26T18:01:31.520+0000] {spark_submit.py:571} INFO - |Azerbaijan   |FEMALE|Low        |2             |48144.45  |48144.45  |48144.45  |
+[2026-03-26T18:01:31.520+0000] {spark_submit.py:571} INFO - |Azerbaijan   |MALE  |High       |2             |119679.62 |119679.62 |119679.62 |
+[2026-03-26T18:01:31.521+0000] {spark_submit.py:571} INFO - |Bangladesh   |MALE  |High       |2             |222839.61 |222839.61 |222839.61 |
+[2026-03-26T18:01:31.521+0000] {spark_submit.py:571} INFO - +-------------+------+-----------+--------------+----------+----------+----------+
+[2026-03-26T18:01:31.521+0000] {spark_submit.py:571} INFO - only showing top 20 rows
+[2026-03-26T18:01:31.521+0000] {spark_submit.py:571} INFO - 
+[2026-03-26T18:01:32.762+0000] {spark_submit.py:571} INFO - 26/03/26 18:01:32 WARN HiveConf: HiveConf of name hive.log.dir does not exist
+[2026-03-26T18:01:32.762+0000] {spark_submit.py:571} INFO - 26/03/26 18:01:32 WARN HiveConf: HiveConf of name hive.notification.event.poll.interval does not exist
+[2026-03-26T18:01:32.762+0000] {spark_submit.py:571} INFO - 26/03/26 18:01:32 WARN HiveConf: HiveConf of name hive.log.file does not exist
+[2026-03-26T18:08:10.948+0000] {spark_submit.py:571} INFO - 26/03/26 18:08:10 WARN SessionState: METASTORE_FILTER_HOOK will be ignored, since hive.security.authorization.manager is set to instance of HiveAuthorizerFactory.
+[2026-03-26T18:08:45.452+0000] {spark_submit.py:571} INFO - [INFO] team06.salary_stats_by_country — сохранена ✓
+[2026-03-26T18:08:47.703+0000] {spark_submit.py:571} INFO - 26/03/26 18:08:47 WARN Dispatcher: Message RequestMessage(team-06-nn:46397, NettyRpcEndpointRef(spark://CoarseGrainedScheduler@team-06-nn:46397), RemoveExecutor(1,Executor for container container_1773268682224_0006_01_000002 exited after Application shutdown.)) dropped due to sparkEnv is stopped. Could not find CoarseGrainedScheduler.
+[2026-03-26T18:08:51.949+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2026-03-26T18:08:56.699+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=spark_hive_pipeline, task_id=run_spark_job, run_id=manual__2026-03-26T16:52:33+00:00, execution_date=20260326T165233, start_date=20260326T174546, end_date=20260326T180856
+[2026-03-26T18:09:00.702+0000] {local_task_job_runner.py:243} INFO - Task exited with return code 0
+[2026-03-26T18:09:04.947+0000] {taskinstance.py:3503} INFO - 1 downstream tasks scheduled from follow-on schedule check
+[2026-03-26T18:09:04.952+0000] {local_task_job_runner.py:222} INFO - ::endgroup::
